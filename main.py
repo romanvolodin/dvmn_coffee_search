@@ -47,14 +47,15 @@ def save_map(user_location, marker_list):
     map.save("index.html")
 
 
-def run_webserver():
-    def index():
+def map_page_handler():
         with open("index.html") as file:
             return file.read()
 
+
+def run_webserver(host="0.0.0.0", port=5000):
     app = Flask(__name__)
-    app.add_url_rule("/", "index", index)
-    app.run("0.0.0.0")
+    app.add_url_rule("/", "map_page", map_page_handler)
+    app.run(host=host, port=port)
 
 
 def collect_coffee_shops(user_lat, user_lon):
