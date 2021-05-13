@@ -57,21 +57,8 @@ def run_webserver():
     app.run("0.0.0.0")
 
 
-
-if __name__ == "__main__":
-    env = Env()
-    env.read_env() 
-
-    api_key = env.str("api_key")
-
-    coffee_shop_list = []
-
-    user_input = input("Где вы находитесь? ").strip()
-    user_lon, user_lat = fetch_coordinates(api_key, user_input)
-
-    print("Ваши координаты:", (user_lat, user_lon))
-    print()
-
+def collect_coffee_shops(user_lat, user_lon):
+    coffee_shops = []
     for coffee_shop in load_data("coffee.json"):
         coffee_shop_title = coffee_shop["Name"]
         coffee_shop_lat = coffee_shop["Latitude_WGS84"]
@@ -79,8 +66,7 @@ if __name__ == "__main__":
         coffee_shop_distance = distance(
             (user_lat, user_lon), (coffee_shop_lat, coffee_shop_lon)
         ).km
-
-        coffee_shop_list.append(
+        coffee_shops.append(
             {
                 'title': coffee_shop_title,
                 'distance': coffee_shop_distance,
@@ -88,9 +74,23 @@ if __name__ == "__main__":
                 'longitude': coffee_shop_lon,
             }
         )
+    return coffee_shops
 
+
+if __name__ == "__main__":
+    env = Env()
+    env.read_env() 
+
+    api_key = env.str("api_key")
+
+    user_input = input("Где вы находитесь? ").strip()
+    user_lon, user_lat = fetch_coordinates(api_key, user_input)
+
+    print("Ваши координаты:", (user_lat, user_lon))
+    print()
+    coffee_shops = collect_coffee_shops(user_lat, user_lon)
     nearest_coffee_shops = sorted(
-        coffee_shop_list,
+        coffee_shops,
         key = lambda coffee_shop: coffee_shop["distance"]
     )[:SHOW_TOTAL_PLACES]
 
