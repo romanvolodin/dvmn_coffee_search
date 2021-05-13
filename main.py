@@ -81,7 +81,7 @@ if __name__ == "__main__":
     env = Env()
     env.read_env() 
 
-    api_key = env.str("api_key")
+    api_key = env.str("COFFEE_API_KEY")
 
     user_location = input("Где вы находитесь? ").strip()
     user_lon, user_lat = fetch_coordinates(api_key, user_location)
