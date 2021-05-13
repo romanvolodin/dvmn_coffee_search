@@ -11,12 +11,9 @@ SHOW_TOTAL_PLACES = 5
 HTML_MAP_PATH = "coffee_map.html"
 
 
-def load_data(filepath):
-    try:
-        with open(filepath, 'r', encoding='CP1251') as json_file:
-            return json.load(json_file)
-    except json.decoder.JSONDecodeError:
-        return
+def load_coffee_shops(filepath):
+    with open(filepath, 'r', encoding='CP1251') as json_file:
+        return json.load(json_file)
 
 
 def fetch_coordinates(apikey, place):
@@ -78,7 +75,7 @@ def run_webserver(host="0.0.0.0", port=5000):
 
 def collect_coffee_shops(user_lat, user_lon):
     coffee_shops = []
-    for coffee_shop in load_data("coffee.json"):
+    for coffee_shop in load_coffee_shops("coffee.json"):
         coffee_shop_title = coffee_shop["Name"]
         coffee_shop_lat = coffee_shop["Latitude_WGS84"]
         coffee_shop_lon = coffee_shop["Longitude_WGS84"]
