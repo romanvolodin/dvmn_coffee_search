@@ -41,7 +41,6 @@ python main.py
 Пример вывода:
 ```sh
 Где вы находитесь? Зарядье
-Ваши координаты: ('55.751244', '37.629017')
 
  * Serving Flask app "main" (lazy loading)
  * Environment: production
