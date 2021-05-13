@@ -8,6 +8,7 @@ from environs import Env
 
 
 SHOW_TOTAL_PLACES = 5
+HTML_MAP_PATH = "coffee_map.html"
 
 
 def load_data(filepath):
@@ -33,22 +34,39 @@ def replace_spaces_with_nbsp(string):
     return string.replace(" ", "&nbsp;")
 
 
-def save_map(user_location, marker_list):
-    map = folium.Map(location=user_location)
-    for marker in marker_list:
+def generate_human_readable_distance(distance):
+    distance_message = "Расстояние: {}"
+    distance_with_units = f"{distance:.2f} км"
+
+    if distance < 1:
+        distance_with_units = f"{int(distance*1000)} м"
+
+    return distance_message.format(distance_with_units)
+
+
+def generate_html_coffee_map(user_location, coffee_shops):
+    coffee_map = folium.Map(location=user_location)
+
+    folium.Marker(
+        user_location, tooltip="Вы здесь", icon=folium.Icon(color="red")
+    ).add_to(coffee_map)
+
+    for coffee_shop in coffee_shops:
+        distance = generate_human_readable_distance(coffee_shop['distance'])
         folium.Marker(
-            (marker["latitude"], marker["longitude"]),
+            (coffee_shop["latitude"], coffee_shop["longitude"]),
             popup = (
-                f"<b>{replace_spaces_with_nbsp(marker['title'])}</b><br>"
-                f"Расстояние: {marker['distance']:.2} км."
+                f"<b>{replace_spaces_with_nbsp(coffee_shop['title'])}</b><br>"
+                f"{replace_spaces_with_nbsp(distance)}."
             ),
-            tooltip = marker["title"]
-        ).add_to(map)
-    map.save("index.html")
+            tooltip = coffee_shop["title"]
+        ).add_to(coffee_map)
+
+    return coffee_map
 
 
 def map_page_handler():
-        with open("index.html") as file:
+        with open(HTML_MAP_PATH) as file:
             return file.read()
 
 
@@ -93,5 +111,8 @@ if __name__ == "__main__":
         key = lambda coffee_shop: coffee_shop["distance"]
     )[:SHOW_TOTAL_PLACES]
 
-    save_map([user_lat, user_lon], nearest_coffee_shops)
+    coffee_map = generate_html_coffee_map(
+        [user_lat, user_lon], nearest_coffee_shops
+    )
+    coffee_map.save(HTML_MAP_PATH)
     run_webserver()
