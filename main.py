@@ -86,8 +86,6 @@ if __name__ == "__main__":
     user_input = input("Где вы находитесь? ").strip()
     user_lon, user_lat = fetch_coordinates(api_key, user_input)
 
-    print("Ваши координаты:", (user_lat, user_lon))
-    print()
     coffee_shops = collect_coffee_shops(user_lat, user_lon)
     nearest_coffee_shops = sorted(
         coffee_shops,
