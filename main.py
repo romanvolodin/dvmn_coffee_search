@@ -7,7 +7,7 @@ from geopy.distance import distance
 from environs import Env
 
 
-SHOW_TOTAL_PLACES = 5
+MAX_PLACES = 5
 HTML_MAP_PATH = "coffee_map.html"
 
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     nearest_coffee_shops = sorted(
         coffee_shops,
         key = lambda coffee_shop: coffee_shop["distance"]
-    )[:SHOW_TOTAL_PLACES]
+    )[:MAX_PLACES]
 
     coffee_map = generate_html_coffee_map(
         [user_lat, user_lon], nearest_coffee_shops
